@@ -1,8 +1,14 @@
-print("Anh Duy Checking...")
-
-print("KEYLESS !")
-
+print("LOL Checking...")
+print("Á đù tìm thấy rồi!")
+print("Anh Chả Mực Đẹp Trai Kìa !")
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+Rayfield:Notify({
+   Title = "Anh Duy Checking...",
+   Content = "Key Less!",
+   Duration = 7,
+   Image = 4483362458
+})
 
 local Window = Rayfield:CreateWindow({
    Name = "15T_Pro Hub (Beta) Cre: ChaMuc",
@@ -519,4 +525,18 @@ More:CreateButton({
     Name = "15T_Pro Hub: 🟢",
     Callback = function()
     end
+})
+
+Rayfield:Notify({
+   Title = "✨Welcome",
+   Content = "Yo Whats Up!",
+   Duration = 7,
+   Image = 4483362458
+})
+
+Rayfield:Notify({
+   Title = "Status",
+   Content = "15T_Pro Hub: 🟢",
+   Duration = 7,
+   Image = 4483362458
 })
