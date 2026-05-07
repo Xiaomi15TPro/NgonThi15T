@@ -26,7 +26,7 @@ Fluent:Notify({
 })
 
 -- ==========================================
--- PHẦN NÚT TRÒN FIX LỖI 100%
+-- PHẦN NÚT TRÒN
 -- ==========================================
 
 local UIS = game:GetService("UserInputService")
