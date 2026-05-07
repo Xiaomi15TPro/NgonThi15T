@@ -26,7 +26,7 @@ Fluent:Notify({
 })
 
 -- ==========================================
--- PHẦN NÚT TRÒN
+-- PHẦN NÚT TRÒN FIX LỖI 100%
 -- ==========================================
 
 local UIS = game:GetService("UserInputService")
@@ -78,9 +78,9 @@ local Window = Fluent:CreateWindow({
     Title = "15T_Pro Hub (Beta)",
     SubTitle = "By ChaMuc",
     TabWidth = 150,
-    Size = UDim2.fromOffset(560, 450),
+    Size = UDim2.fromOffset(600, 475),
     Acrylic = true,
-    Theme = "Darker",
+    Theme = "",
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 
@@ -389,9 +389,17 @@ Tabs.Combat:AddButton({
 -- AIMLOCK
 -------------------------------------------------
 
+-------------------------------------------------
+-- AIMLOCK
+-------------------------------------------------
+
 local aimEnabled = false
 local aimFov = 200
 local targetPlayers = {}
+
+-------------------------------------------------
+-- FOV CIRCLE
+-------------------------------------------------
 
 local circle = Drawing.new("Circle")
 circle.Visible = false
@@ -399,15 +407,29 @@ circle.Thickness = 2
 circle.Color = Color3.fromRGB(0,255,120)
 circle.Filled = false
 
+-------------------------------------------------
+-- UPDATE CIRCLE
+-------------------------------------------------
+
 RunService.RenderStepped:Connect(function()
 
-    circle.Position = UIS:GetMouseLocation()
-    circle.Radius = aimFov
-    circle.Visible = aimEnabled
+    if aimEnabled then
+
+        circle.Visible = true
+        circle.Position = UIS:GetMouseLocation()
+        circle.Radius = aimFov
+
+    else
+
+        circle.Visible = false
+
+    end
 
 end)
 
-local selectedTargets = {}
+-------------------------------------------------
+-- TARGET SELECT
+-------------------------------------------------
 
 local Dropdown = Tabs.Aimlock:AddDropdown("TargetSelect", {
     Title = "Select Target",
@@ -416,40 +438,67 @@ local Dropdown = Tabs.Aimlock:AddDropdown("TargetSelect", {
     Default = {}
 })
 
-Dropdown:OnChanged(function(options)
+Dropdown:OnChanged(function(Value)
 
     targetPlayers = {}
 
-    for name,_ in pairs(options) do
+    for playerName,isSelected in pairs(Value) do
 
-        local plr = Players:FindFirstChild(name)
+        if isSelected then
 
-        if plr then
-            table.insert(targetPlayers, plr)
+            local plr = Players:FindFirstChild(playerName)
+
+            if plr then
+                table.insert(targetPlayers, plr)
+            end
+
         end
 
     end
 
 end)
 
+-------------------------------------------------
+-- TOGGLE
+-------------------------------------------------
+
 Tabs.Aimlock:AddToggle("Aimlock", {
     Title = "Aimlock",
     Default = false,
+
     Callback = function(v)
+
         aimEnabled = v
+
+        circle.Visible = v
+        circle.Radius = aimFov
+        circle.Position = UIS:GetMouseLocation()
+
     end
 })
 
+-------------------------------------------------
+-- FOV
+-------------------------------------------------
+
 Tabs.Aimlock:AddSlider("FOV", {
-    Title = "FOV",
+    Title = "FOV (adjust this to make it work.)",
     Min = 50,
     Max = 500,
     Default = 200,
     Rounding = 1,
+
     Callback = function(v)
+
         aimFov = v
+        circle.Radius = v
+
     end
 })
+
+-------------------------------------------------
+-- GET CLOSEST
+-------------------------------------------------
 
 local function getClosest()
 
@@ -458,18 +507,25 @@ local function getClosest()
 
     for _,plr in pairs(targetPlayers) do
 
-        if plr.Character and plr.Character:FindFirstChild("Head") then
+        if plr
+        and plr.Character
+        and plr.Character:FindFirstChild("Head") then
 
-            local pos, visible = Camera:WorldToViewportPoint(plr.Character.Head.Position)
+            local head = plr.Character.Head
+
+            local pos, visible =
+            Camera:WorldToViewportPoint(head.Position)
 
             if visible then
 
-                local dist = (Vector2.new(pos.X,pos.Y) - UIS:GetMouseLocation()).Magnitude
+                local distance =
+                (Vector2.new(pos.X,pos.Y)
+                - UIS:GetMouseLocation()).Magnitude
 
-                if dist < shortest then
+                if distance < shortest then
 
-                    shortest = dist
-                    closest = plr
+                    shortest = distance
+                    closest = head
 
                 end
 
@@ -480,7 +536,12 @@ local function getClosest()
     end
 
     return closest
+
 end
+
+-------------------------------------------------
+-- AIM LOOP
+-------------------------------------------------
 
 RunService.RenderStepped:Connect(function()
 
@@ -488,16 +549,20 @@ RunService.RenderStepped:Connect(function()
 
     local target = getClosest()
 
-    if target and target.Character and target.Character:FindFirstChild("Head") then
+    if target then
 
-        Camera.CFrame = CFrame.new(
+        Camera.CFrame = CFrame.lookAt(
             Camera.CFrame.Position,
-            target.Character.Head.Position
+            target.Position
         )
 
     end
 
 end)
+
+-------------------------------------------------
+-- REFRESH PLAYERS
+-------------------------------------------------
 
 local function refreshAim()
 
