@@ -5,18 +5,12 @@ print("Anh Chả Mực Đẹp Trai Kìa !")
 -------------------------------------------------
 -- FLUENT
 -------------------------------------------------
-
-local Fluent = loadstring(game:HttpGet(
-    "https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"
-))()
-
-local SaveManager = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"
-))()
-
-local InterfaceManager = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"
-))()
+--- 1
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+--- 2 
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+--- 3
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 
 Fluent:Notify({
@@ -24,51 +18,6 @@ Fluent:Notify({
     Content = "Key Less!",
     Duration = 7
 })
-
--- ==========================================
--- PHẦN NÚT TRÒN FIX LỖI 100%
--- ==========================================
-
-local UIS = game:GetService("UserInputService")
-local VIM = game:GetService("VirtualInputManager")
-
-local ScreenGui = Instance.new("ScreenGui")
-local ToggleButton = Instance.new("ImageButton")
-local UICorner = Instance.new("UICorner")
-
-ScreenGui.Name = "FluentToggle"
-ScreenGui.Parent = game:GetService("CoreGui")
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-ToggleButton.Name = "ToggleButton"
-ToggleButton.Parent = ScreenGui
-ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-ToggleButton.BorderSizePixel = 0
-ToggleButton.Position = UDim2.new(0.1, 0, 0.4, 0)
-ToggleButton.Size = UDim2.new(0, 50, 0, 50)
-ToggleButton.Image = "rbxassetid://118444257763865" -- Thay ID của bạn ở đây
-ToggleButton.Draggable = true -- Bạn có thể kéo nút đi chỗ khác nếu nó che màn hình
-
-UICorner.CornerRadius = UDim.new(1, 0)
-UICorner.Parent = ToggleButton
-
--- HÀM KÍCH HOẠT ẨN/HIỆN (DÙNG PHÍM TẮT CỦA WINDOW)
-ToggleButton.MouseButton1Click:Connect(function()
-    -- Giả lập bấm phím LeftControl (Phím mặc định của Fluent)
-    -- Nếu bạn đổi MinimizeKey trong lúc tạo Window thì sửa Enum.KeyCode tương ứng ở đây
-    VIM:SendKeyEvent(true, Enum.KeyCode.LeftControl, false, game)
-    task.wait(0.05)
-    VIM:SendKeyEvent(false, Enum.KeyCode.LeftControl, false, game)
-end)
-
--- Hiệu ứng hình ảnh khi nhấn vào nút cho cảm giác mượt hơn
-ToggleButton.MouseButton1Down:Connect(function()
-    ToggleButton:TweenSize(UDim2.new(0, 45, 0, 45), "Out", "Quad", 0.1, true)
-end)
-
-ToggleButton.MouseButton1Up:Connect(function()
-    ToggleButton:TweenSize(UDim2.new(0, 50, 0, 50), "Out", "Quad", 0.1, true)
-end)
 
 -------------------------------------------------
 -- WINDOW
@@ -96,6 +45,19 @@ local Tabs = {
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
+task.wait(.3)
+
+pcall(function()
+
+    if Fluent.LoadTheme then
+
+        Fluent:LoadTheme(
+            SavedTheme
+        )
+
+    end
+
+end)
 -------------------------------------------------
 -- THEME SETTINGS
 -------------------------------------------------
@@ -118,11 +80,33 @@ ThemeDropdown:OnChanged(function(Value)
 
     pcall(function()
 
+        -------------------------------------------------
+        -- APPLY
+        -------------------------------------------------
+
         if Fluent.LoadTheme then
             Fluent:LoadTheme(Value)
 
         elseif Fluent.SetTheme then
             Fluent:SetTheme(Value)
+
+        end
+
+        -------------------------------------------------
+        -- SAVE
+        -------------------------------------------------
+
+        if writefile then
+
+            writefile(
+
+                themeFile,
+
+                HttpService:JSONEncode({
+                    Theme = Value
+                })
+
+            )
 
         end
 
@@ -141,6 +125,45 @@ local Camera = workspace.CurrentCamera
 local UIS = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
 
+-------------------------------------------------
+-- THEME SAVE SYSTEM
+-------------------------------------------------
+
+local HttpService = game:GetService("HttpService")
+
+-------------------------------------------------
+-- THEME SAVE
+-------------------------------------------------
+
+local ThemeFile =
+"15T_THEME_"..
+Players.LocalPlayer.UserId..
+".json"
+
+local SavedTheme = "Darker"
+
+pcall(function()
+
+    if isfile
+    and isfile(ThemeFile) then
+
+        local Data =
+        HttpService:JSONDecode(
+            readfile(
+                ThemeFile
+            )
+        )
+
+        if Data.Theme then
+
+            SavedTheme =
+            Data.Theme
+
+        end
+
+    end
+
+end)
 -------------------------------------------------
 -- WALK SPEED
 -------------------------------------------------
@@ -186,19 +209,27 @@ local adminFly = false
 local velocityFly = false
 local flySpeed = 80
 
-local BV, BG
+local BV
+local BG
 
 local function isTyping()
     return UIS:GetFocusedTextBox() ~= nil
 end
 
-local function stopAllFly()
+-------------------------------------------------
+-- STOP
+-------------------------------------------------
+
+local function stopFlyPhysics()
 
     local char = LocalPlayer.Character
     if not char then return end
 
-    local hum = char:FindFirstChildOfClass("Humanoid")
-    local root = char:FindFirstChild("HumanoidRootPart")
+    local hum =
+    char:FindFirstChildOfClass("Humanoid")
+
+    local root =
+    char:FindFirstChild("HumanoidRootPart")
 
     if hum then
         hum.PlatformStand = false
@@ -215,15 +246,13 @@ local function stopAllFly()
     end
 
     if root then
-        root.Velocity = Vector3.new()
+        root.Velocity = Vector3.zero
     end
 
-    adminFly = false
-    velocityFly = false
 end
 
 -------------------------------------------------
--- FLY SPEED
+-- SPEED
 -------------------------------------------------
 
 Tabs.Main:AddSlider("FlySpeed", {
@@ -232,8 +261,11 @@ Tabs.Main:AddSlider("FlySpeed", {
     Max = 500,
     Default = 80,
     Rounding = 1,
+
     Callback = function(v)
+
         flySpeed = v
+
     end
 })
 
@@ -244,32 +276,51 @@ Tabs.Main:AddSlider("FlySpeed", {
 Tabs.Main:AddToggle("NormalFly", {
     Title = "Normal Fly",
     Default = false,
+
     Callback = function(v)
 
-        stopAllFly()
-
+        velocityFly = false
         adminFly = v
-        if not v then return end
+
+        stopFlyPhysics()
+
+        if not v then
+            return
+        end
 
         local char = LocalPlayer.Character
         if not char then return end
 
-        local hum = char:FindFirstChildOfClass("Humanoid")
-        local root = char:FindFirstChild("HumanoidRootPart")
+        local hum =
+        char:FindFirstChildOfClass("Humanoid")
 
-        if not hum or not root then return end
+        local root =
+        char:FindFirstChild("HumanoidRootPart")
+
+        if not hum or not root then
+            return
+        end
 
         hum.PlatformStand = true
 
         BV = Instance.new("BodyVelocity")
-        BV.MaxForce = Vector3.new(9e9,9e9,9e9)
-        BV.Velocity = Vector3.new()
+        BV.MaxForce = Vector3.new(
+            9e9,
+            9e9,
+            9e9
+        )
+
+        BV.Velocity = Vector3.zero
         BV.Parent = root
 
         BG = Instance.new("BodyGyro")
-        BG.MaxTorque = Vector3.new(9e9,9e9,9e9)
+        BG.MaxTorque = Vector3.new(
+            9e9,
+            9e9,
+            9e9
+        )
+
         BG.P = 9e4
-        BG.CFrame = root.CFrame
         BG.Parent = root
 
     end
@@ -282,66 +333,130 @@ Tabs.Main:AddToggle("NormalFly", {
 Tabs.Main:AddToggle("VelocityFly", {
     Title = "Velocity Fly",
     Default = false,
+
     Callback = function(v)
 
-        stopAllFly()
-
+        adminFly = false
         velocityFly = v
+
+        stopFlyPhysics()
 
     end
 })
 
 -------------------------------------------------
--- FLY LOOP
+-- LOOP
 -------------------------------------------------
 
 RunService.RenderStepped:Connect(function()
 
-    if isTyping() then return end
+    if not adminFly
+    and not velocityFly then
+        return
+    end
 
-    local char = LocalPlayer.Character
+    local char =
+    LocalPlayer.Character
+
     if not char then return end
 
-    local root = char:FindFirstChild("HumanoidRootPart")
+    local root =
+    char:FindFirstChild(
+        "HumanoidRootPart"
+    )
+
     if not root then return end
 
-    local move = Vector3.new()
+    -------------------------------------------------
+    -- CHAT
+    -------------------------------------------------
 
-    if UIS:IsKeyDown(Enum.KeyCode.W) then
-        move += Camera.CFrame.LookVector
+    if isTyping() then
+
+        if BV then
+            BV.Velocity =
+            Vector3.zero
+        end
+
+        root.Velocity =
+        Vector3.zero
+
+        return
     end
 
-    if UIS:IsKeyDown(Enum.KeyCode.S) then
-        move -= Camera.CFrame.LookVector
+    -------------------------------------------------
+    -- MOVE
+    -------------------------------------------------
+
+    local move =
+    Vector3.zero
+
+    if UIS:IsKeyDown(
+        Enum.KeyCode.W
+    ) then
+
+        move +=
+        Camera.CFrame.LookVector
+
     end
 
-    if UIS:IsKeyDown(Enum.KeyCode.A) then
-        move -= Camera.CFrame.RightVector
+    if UIS:IsKeyDown(
+        Enum.KeyCode.S
+    ) then
+
+        move -=
+        Camera.CFrame.LookVector
+
     end
 
-    if UIS:IsKeyDown(Enum.KeyCode.D) then
-        move += Camera.CFrame.RightVector
+    if UIS:IsKeyDown(
+        Enum.KeyCode.A
+    ) then
+
+        move -=
+        Camera.CFrame.RightVector
+
     end
 
-    if UIS:IsKeyDown(Enum.KeyCode.Space) then
-        move += Vector3.new(0,1,0)
+    if UIS:IsKeyDown(
+        Enum.KeyCode.D
+    ) then
+
+        move +=
+        Camera.CFrame.RightVector
+
     end
 
-    if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then
-        move -= Vector3.new(0,1,0)
+    if move.Magnitude > 0 then
+
+        move =
+        move.Unit *
+        flySpeed
+
     end
 
-    if adminFly and BV and BG then
-        BV.Velocity = move * flySpeed
-        BG.CFrame = Camera.CFrame
+    -------------------------------------------------
+    -- APPLY
+    -------------------------------------------------
+
+    if adminFly
+    and BV
+    and BG then
+
+        BV.Velocity = move
+        BG.CFrame =
+        Camera.CFrame
+
     end
 
     if velocityFly then
-        root.Velocity = move * flySpeed
+
+        root.Velocity =
+        move
+
     end
 
 end)
-
 -------------------------------------------------
 -- NOCLIP
 -------------------------------------------------
@@ -384,10 +499,6 @@ Tabs.Combat:AddButton({
 
     end
 })
-
--------------------------------------------------
--- AIMLOCK
--------------------------------------------------
 
 -------------------------------------------------
 -- AIMLOCK
@@ -788,6 +899,22 @@ Tabs.More:AddParagraph({
     Content = "🟢"
 })
 
+local menuVisible = true
+
+UIS.InputBegan:Connect(function(input,gp)
+
+    if gp then return end
+
+    if input.KeyCode == Enum.KeyCode.LeftControl then
+
+        menuVisible = not menuVisible
+
+        Window:Minimize(not menuVisible)
+
+    end
+
+end)
+
 -------------------------------------------------
 -- NOTIFY
 -------------------------------------------------
@@ -804,5 +931,138 @@ Fluent:Notify({
     Duration = 7
 })
 
-task.wait(2)
-Fluent:LoadTheme("Rose")
+----- Ctrl
+local menuVisible = true
+
+UIS.InputBegan:Connect(function(input,gp)
+
+    if gp then return end
+
+    if input.KeyCode == Enum.KeyCode.LeftControl then
+
+        menuVisible = not menuVisible
+
+        Window:Minimize(not menuVisible)
+
+    end
+
+end)
+
+-------------------------------------------------
+-- FLUENT LOGO TOGGLE
+-------------------------------------------------
+
+local CoreGui = game:GetService("CoreGui")
+
+local LogoGui = Instance.new("ScreenGui")
+local ToggleButton = Instance.new("ImageButton")
+local UICorner = Instance.new("UICorner")
+
+local menuVisible = true
+
+-------------------------------------------------
+-- GUI
+-------------------------------------------------
+
+LogoGui.Name = "15TLogo"
+LogoGui.ResetOnSpawn = false
+LogoGui.Parent = CoreGui
+LogoGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-------------------------------------------------
+-- BUTTON
+-------------------------------------------------
+
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Parent = LogoGui
+
+ToggleButton.BackgroundColor3 =
+Color3.fromRGB(255,255,255)
+
+ToggleButton.BorderSizePixel = 0
+
+ToggleButton.Position =
+UDim2.new(0.1,0,0.4,0)
+
+ToggleButton.Size =
+UDim2.new(0,50,0,50)
+
+ToggleButton.Image =
+"rbxassetid://118444257763865"
+
+ToggleButton.Draggable = true
+
+UICorner.CornerRadius = UDim.new(1,0)
+UICorner.Parent = ToggleButton
+
+-------------------------------------------------
+-- TOGGLE FLUENT ONLY
+-------------------------------------------------
+
+local function ToggleMenu()
+
+    menuVisible = not menuVisible
+
+    pcall(function()
+
+        Window:Minimize(
+            not menuVisible
+        )
+
+    end)
+
+end
+
+-------------------------------------------------
+-- CLICK
+-------------------------------------------------
+
+ToggleButton.MouseButton1Click:Connect(function()
+
+    ToggleMenu()
+
+end)
+
+-------------------------------------------------
+-- EFFECT
+-------------------------------------------------
+
+ToggleButton.MouseButton1Down:Connect(function()
+
+    ToggleButton:TweenSize(
+        UDim2.new(0,45,0,45),
+        "Out",
+        "Quad",
+        0.1,
+        true
+    )
+
+end)
+
+ToggleButton.MouseButton1Up:Connect(function()
+
+    ToggleButton:TweenSize(
+        UDim2.new(0,50,0,50),
+        "Out",
+        "Quad",
+        0.1,
+        true
+    )
+
+end)
+
+-------------------------------------------------
+-- CTRL
+-------------------------------------------------
+
+UIS.InputBegan:Connect(function(input,gp)
+
+    if gp then return end
+
+    if input.KeyCode == Enum.KeyCode.LeftControl then
+
+        ToggleMenu()
+
+    end
+
+end)
