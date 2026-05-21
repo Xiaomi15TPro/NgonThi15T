@@ -3,182 +3,169 @@ print("Á đù tìm thấy rồi!")
 print("Anh Chả Mực Đẹp Trai Kìa !")
 
 -------------------------------------------------
--- FLUENT
--------------------------------------------------
---- 1
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
---- 2 
-local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
---- 3
-local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
-
-
-Fluent:Notify({
-    Title = "Anh Duy Checking...",
-    Content = "Key Less!",
-    Duration = 7
-})
-
--------------------------------------------------
--- WINDOW
--------------------------------------------------
-
-local Window = Fluent:CreateWindow({
-    Title = "15T_Pro Hub (Beta)",
-    SubTitle = "By ChaMuc",
-    TabWidth = 150,
-    Size = UDim2.fromOffset(600, 475),
-    Acrylic = true,
-    Theme = "",
-    MinimizeKey = Enum.KeyCode.LeftControl
-})
-
--------------------------------------------------
--- TABS
--------------------------------------------------
-
-local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "home" }),
-    Aimlock = Window:AddTab({ Title = "Aimlock", Icon = "crosshair" }),
-    Combat = Window:AddTab({ Title = "Combat", Icon = "sword" }),
-    More = Window:AddTab({ Title = "More", Icon = "menu" }),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
-}
-
-task.wait(.3)
-
-pcall(function()
-
-    if Fluent.LoadTheme then
-
-        Fluent:LoadTheme(
-            SavedTheme
-        )
-
-    end
-
-end)
--------------------------------------------------
--- THEME SETTINGS
--------------------------------------------------
-
-local ThemeDropdown = Tabs.Settings:AddDropdown("ThemeSelect", {
-    Title = "Theme",
-Values = {
-    "Darker",
-    "Light",
-    "Rose",
-    "Aqua",
-    "Amethyst",
-
-},
-    Multi = false,
-    Default = "Darker"
-})
-
-ThemeDropdown:OnChanged(function(Value)
-
-    pcall(function()
-
-        -------------------------------------------------
-        -- APPLY
-        -------------------------------------------------
-
-        if Fluent.LoadTheme then
-            Fluent:LoadTheme(Value)
-
-        elseif Fluent.SetTheme then
-            Fluent:SetTheme(Value)
-
-        end
-
-        -------------------------------------------------
-        -- SAVE
-        -------------------------------------------------
-
-        if writefile then
-
-            writefile(
-
-                themeFile,
-
-                HttpService:JSONEncode({
-                    Theme = Value
-                })
-
-            )
-
-        end
-
-    end)
-
-end)
-
--------------------------------------------------
 -- SERVICES
 -------------------------------------------------
 
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local LocalPlayer = Players.LocalPlayer
-local Camera = workspace.CurrentCamera
 local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 local Lighting = game:GetService("Lighting")
 
--------------------------------------------------
--- THEME SAVE SYSTEM
--------------------------------------------------
-
-local HttpService = game:GetService("HttpService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
 
 -------------------------------------------------
 -- THEME SAVE
 -------------------------------------------------
 
-local ThemeFile =
-"15T_THEME_"..
-Players.LocalPlayer.UserId..
-".json"
-
-local SavedTheme = "Darker"
+local ThemeFile = "15T_THEME.txt"
+local SavedTheme = ""
 
 pcall(function()
 
     if isfile
+    and readfile
     and isfile(ThemeFile) then
 
-        local Data =
-        HttpService:JSONDecode(
-            readfile(
-                ThemeFile
-            )
-        )
+        SavedTheme =
+        readfile(ThemeFile)
 
-        if Data.Theme then
+    end
 
-            SavedTheme =
-            Data.Theme
+end)
+
+-------------------------------------------------
+-- LOAD WINDUI
+-------------------------------------------------
+
+local WindUI = loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"
+))()
+
+-------------------------------------------------
+-- WINDOW
+-------------------------------------------------
+
+local Window = WindUI:CreateWindow({
+    Title = "15T_Pro Hub (Beta)",
+    Icon = "rbxassetid://118444257763865",
+    Author = "By ChaMuc",
+    Folder = "15T_ProHub (Beta)",
+    Size = UDim2.fromOffset(580,460),
+    Transparent = true,
+    Theme = "Dark",
+    SideBarWidth = 180,
+    HasOutline = false
+})
+
+-------------------------------------------------
+-- FORCE TO GETHUI
+-------------------------------------------------
+
+task.wait(1)
+
+pcall(function()
+
+    for _,v in pairs(game.CoreGui:GetChildren()) do
+
+        if v:IsA("ScreenGui") then
+
+            if tostring(v.Name):lower():find("wind") then
+
+                v.Parent =
+                gethui and gethui()
+                or game.CoreGui
+
+                v.DisplayOrder =
+                999999999
+
+                v.IgnoreGuiInset = true
+
+                v.ZIndexBehavior =
+                Enum.ZIndexBehavior.Global
+
+            end
 
         end
 
     end
 
 end)
+
 -------------------------------------------------
--- WALK SPEED
+-- TABS
 -------------------------------------------------
 
-Tabs.Main:AddSlider("WalkSpeed", {
+local MainTab = Window:Tab({
+    Title = "Main",
+    Icon = "house"
+})
+
+local AimlockTab = Window:Tab({
+    Title = "Aimlock",
+    Icon = "target"
+})
+
+local CombatTab = Window:Tab({
+    Title = "Combat",
+    Icon = "sword"
+})
+
+local MoreTab = Window:Tab({
+    Title = "More",
+    Icon = "menu"
+})
+
+local SettingsTab = Window:Tab({
+    Title = "Settings",
+    Icon = "settings"
+})
+
+-------------------------------------------------
+-- NOTIFY
+-------------------------------------------------
+WindUI:Notify({
+    Title = "15T_Pro Hub",
+    Content = "Checking...",
+    Duration = 5
+})
+
+WindUI:Notify({
+    Title = "15T_Pro Hub",
+    Content = "Wait a second...",
+    Duration = 5
+})
+
+WindUI:Notify({
+    Title = "Status",
+    Content = "15T_Pro: 🟢",
+    Duration = 5
+})
+
+-------------------------------------------------
+-- WALKSPEED
+-------------------------------------------------
+
+MainTab:Slider({
     Title = "WalkSpeed",
-    Min = 16,
-    Max = 500,
-    Default = 16,
-    Rounding = 1,
+
+    Value = {
+        Min = 16,
+        Max = 500,
+        Default = 16
+    },
+
     Callback = function(v)
-        local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+
+        local hum =
+        LocalPlayer.Character
+        and
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+
         if hum then
             hum.WalkSpeed = v
         end
+
     end
 })
 
@@ -186,18 +173,29 @@ Tabs.Main:AddSlider("WalkSpeed", {
 -- JUMP POWER
 -------------------------------------------------
 
-Tabs.Main:AddSlider("JumpPower", {
+MainTab:Slider({
     Title = "JumpPower",
-    Min = 50,
-    Max = 500,
-    Default = 50,
-    Rounding = 1,
+
+    Value = {
+        Min = 50,
+        Max = 500,
+        Default = 50
+    },
+
     Callback = function(v)
-        local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+
+        local hum =
+        LocalPlayer.Character
+        and
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+
         if hum then
+
             hum.UseJumpPower = true
             hum.JumpPower = v
+
         end
+
     end
 })
 
@@ -213,12 +211,10 @@ local BV
 local BG
 
 local function isTyping()
-    return UIS:GetFocusedTextBox() ~= nil
-end
 
--------------------------------------------------
--- STOP
--------------------------------------------------
+    return UIS:GetFocusedTextBox() ~= nil
+
+end
 
 local function stopFlyPhysics()
 
@@ -252,15 +248,17 @@ local function stopFlyPhysics()
 end
 
 -------------------------------------------------
--- SPEED
+-- FLY SPEED
 -------------------------------------------------
 
-Tabs.Main:AddSlider("FlySpeed", {
+MainTab:Slider({
     Title = "Fly Speed",
-    Min = 10,
-    Max = 500,
-    Default = 80,
-    Rounding = 1,
+
+    Value = {
+        Min = 10,
+        Max = 500,
+        Default = 80
+    },
 
     Callback = function(v)
 
@@ -273,9 +271,8 @@ Tabs.Main:AddSlider("FlySpeed", {
 -- NORMAL FLY
 -------------------------------------------------
 
-Tabs.Main:AddToggle("NormalFly", {
+MainTab:Toggle({
     Title = "Normal Fly",
-    Default = false,
 
     Callback = function(v)
 
@@ -304,22 +301,12 @@ Tabs.Main:AddToggle("NormalFly", {
         hum.PlatformStand = true
 
         BV = Instance.new("BodyVelocity")
-        BV.MaxForce = Vector3.new(
-            9e9,
-            9e9,
-            9e9
-        )
-
+        BV.MaxForce = Vector3.new(9e9,9e9,9e9)
         BV.Velocity = Vector3.zero
         BV.Parent = root
 
         BG = Instance.new("BodyGyro")
-        BG.MaxTorque = Vector3.new(
-            9e9,
-            9e9,
-            9e9
-        )
-
+        BG.MaxTorque = Vector3.new(9e9,9e9,9e9)
         BG.P = 9e4
         BG.Parent = root
 
@@ -330,9 +317,8 @@ Tabs.Main:AddToggle("NormalFly", {
 -- VELOCITY FLY
 -------------------------------------------------
 
-Tabs.Main:AddToggle("VelocityFly", {
+MainTab:Toggle({
     Title = "Velocity Fly",
-    Default = false,
 
     Callback = function(v)
 
@@ -345,7 +331,7 @@ Tabs.Main:AddToggle("VelocityFly", {
 })
 
 -------------------------------------------------
--- LOOP
+-- FLY LOOP
 -------------------------------------------------
 
 RunService.RenderStepped:Connect(function()
@@ -361,121 +347,88 @@ RunService.RenderStepped:Connect(function()
     if not char then return end
 
     local root =
-    char:FindFirstChild(
-        "HumanoidRootPart"
-    )
+    char:FindFirstChild("HumanoidRootPart")
 
     if not root then return end
-
-    -------------------------------------------------
-    -- CHAT
-    -------------------------------------------------
 
     if isTyping() then
 
         if BV then
-            BV.Velocity =
-            Vector3.zero
+            BV.Velocity = Vector3.zero
         end
 
-        root.Velocity =
-        Vector3.zero
+        root.Velocity = Vector3.zero
 
         return
-    end
-
-    -------------------------------------------------
-    -- MOVE
-    -------------------------------------------------
-
-    local move =
-    Vector3.zero
-
-    if UIS:IsKeyDown(
-        Enum.KeyCode.W
-    ) then
-
-        move +=
-        Camera.CFrame.LookVector
 
     end
 
-    if UIS:IsKeyDown(
-        Enum.KeyCode.S
-    ) then
+    local move = Vector3.zero
 
-        move -=
-        Camera.CFrame.LookVector
-
+    if UIS:IsKeyDown(Enum.KeyCode.W) then
+        move += Camera.CFrame.LookVector
     end
 
-    if UIS:IsKeyDown(
-        Enum.KeyCode.A
-    ) then
-
-        move -=
-        Camera.CFrame.RightVector
-
+    if UIS:IsKeyDown(Enum.KeyCode.S) then
+        move -= Camera.CFrame.LookVector
     end
 
-    if UIS:IsKeyDown(
-        Enum.KeyCode.D
-    ) then
+    if UIS:IsKeyDown(Enum.KeyCode.A) then
+        move -= Camera.CFrame.RightVector
+    end
 
-        move +=
-        Camera.CFrame.RightVector
-
+    if UIS:IsKeyDown(Enum.KeyCode.D) then
+        move += Camera.CFrame.RightVector
     end
 
     if move.Magnitude > 0 then
 
         move =
-        move.Unit *
-        flySpeed
+        move.Unit * flySpeed
 
     end
-
-    -------------------------------------------------
-    -- APPLY
-    -------------------------------------------------
 
     if adminFly
     and BV
     and BG then
 
         BV.Velocity = move
-        BG.CFrame =
-        Camera.CFrame
+        BG.CFrame = Camera.CFrame
 
     end
 
     if velocityFly then
 
-        root.Velocity =
-        move
+        root.Velocity = move
 
     end
 
 end)
+
 -------------------------------------------------
 -- NOCLIP
 -------------------------------------------------
 
 local noclip = false
 
-Tabs.Main:AddToggle("Noclip", {
+MainTab:Toggle({
     Title = "Noclip",
-    Default = false,
+
     Callback = function(v)
+
         noclip = v
+
     end
 })
 
 RunService.Stepped:Connect(function()
 
-    if noclip and LocalPlayer.Character then
+    if noclip
+    and LocalPlayer.Character then
 
-        for _,v in pairs(LocalPlayer.Character:GetDescendants()) do
+        for _,v in pairs(
+            LocalPlayer.Character:GetDescendants()
+        ) do
 
             if v:IsA("BasePart") then
                 v.CanCollide = false
@@ -488,213 +441,48 @@ RunService.Stepped:Connect(function()
 end)
 
 -------------------------------------------------
--- FLING
+-- BRIGHT MODE
 -------------------------------------------------
 
-Tabs.Combat:AddButton({
-    Title = "ChaMuc Fling GUI",
-    Callback = function()
+local backup = {}
 
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Dumemayhieuoi123/chamucyeuem/refs/heads/main/fling"))()
+local function enableBright()
 
-    end
-})
+    backup = {
+        Brightness = Lighting.Brightness,
+        ClockTime = Lighting.ClockTime,
+        FogEnd = Lighting.FogEnd,
+        Ambient = Lighting.Ambient
+    }
 
--------------------------------------------------
--- AIMLOCK
--------------------------------------------------
-
-local aimEnabled = false
-local aimFov = 200
-local targetPlayers = {}
-
--------------------------------------------------
--- FOV CIRCLE
--------------------------------------------------
-
-local circle = Drawing.new("Circle")
-circle.Visible = false
-circle.Thickness = 2
-circle.Color = Color3.fromRGB(0,255,120)
-circle.Filled = false
-
--------------------------------------------------
--- UPDATE CIRCLE
--------------------------------------------------
-
-RunService.RenderStepped:Connect(function()
-
-    if aimEnabled then
-
-        circle.Visible = true
-        circle.Position = UIS:GetMouseLocation()
-        circle.Radius = aimFov
-
-    else
-
-        circle.Visible = false
-
-    end
-
-end)
-
--------------------------------------------------
--- TARGET SELECT
--------------------------------------------------
-
-local Dropdown = Tabs.Aimlock:AddDropdown("TargetSelect", {
-    Title = "Select Target",
-    Values = {},
-    Multi = true,
-    Default = {}
-})
-
-Dropdown:OnChanged(function(Value)
-
-    targetPlayers = {}
-
-    for playerName,isSelected in pairs(Value) do
-
-        if isSelected then
-
-            local plr = Players:FindFirstChild(playerName)
-
-            if plr then
-                table.insert(targetPlayers, plr)
-            end
-
-        end
-
-    end
-
-end)
-
--------------------------------------------------
--- TOGGLE
--------------------------------------------------
-
-Tabs.Aimlock:AddToggle("Aimlock", {
-    Title = "Aimlock",
-    Default = false,
-
-    Callback = function(v)
-
-        aimEnabled = v
-
-        circle.Visible = v
-        circle.Radius = aimFov
-        circle.Position = UIS:GetMouseLocation()
-
-    end
-})
-
--------------------------------------------------
--- FOV
--------------------------------------------------
-
-Tabs.Aimlock:AddSlider("FOV", {
-    Title = "FOV (adjust this to make it work.)",
-    Min = 50,
-    Max = 500,
-    Default = 200,
-    Rounding = 1,
-
-    Callback = function(v)
-
-        aimFov = v
-        circle.Radius = v
-
-    end
-})
-
--------------------------------------------------
--- GET CLOSEST
--------------------------------------------------
-
-local function getClosest()
-
-    local closest = nil
-    local shortest = aimFov
-
-    for _,plr in pairs(targetPlayers) do
-
-        if plr
-        and plr.Character
-        and plr.Character:FindFirstChild("Head") then
-
-            local head = plr.Character.Head
-
-            local pos, visible =
-            Camera:WorldToViewportPoint(head.Position)
-
-            if visible then
-
-                local distance =
-                (Vector2.new(pos.X,pos.Y)
-                - UIS:GetMouseLocation()).Magnitude
-
-                if distance < shortest then
-
-                    shortest = distance
-                    closest = head
-
-                end
-
-            end
-
-        end
-
-    end
-
-    return closest
+    Lighting.Brightness = 3
+    Lighting.ClockTime = 14
+    Lighting.FogEnd = 100000
+    Lighting.Ambient = Color3.new(1,1,1)
 
 end
 
--------------------------------------------------
--- AIM LOOP
--------------------------------------------------
+local function disableBright()
 
-RunService.RenderStepped:Connect(function()
-
-    if not aimEnabled then return end
-
-    local target = getClosest()
-
-    if target then
-
-        Camera.CFrame = CFrame.lookAt(
-            Camera.CFrame.Position,
-            target.Position
-        )
-
+    for k,v in pairs(backup) do
+        Lighting[k] = v
     end
-
-end)
-
--------------------------------------------------
--- REFRESH PLAYERS
--------------------------------------------------
-
-local function refreshAim()
-
-    local list = {}
-
-    for _,plr in pairs(Players:GetPlayers()) do
-
-        if plr ~= LocalPlayer then
-            table.insert(list, plr.Name)
-        end
-
-    end
-
-    Dropdown:SetValues(list)
 
 end
 
-refreshAim()
+MainTab:Toggle({
+    Title = "Bright Mode",
 
-Players.PlayerAdded:Connect(refreshAim)
-Players.PlayerRemoving:Connect(refreshAim)
+    Callback = function(v)
+
+        if v then
+            enableBright()
+        else
+            disableBright()
+        end
+
+    end
+})
 
 -------------------------------------------------
 -- ESP
@@ -731,32 +519,59 @@ local function createESP(player)
 
     removeESP(player)
 
-    local head = char:FindFirstChild("Head") or char:FindFirstChildWhichIsA("BasePart")
+    local head =
+    char:FindFirstChild("Head")
+    or char:FindFirstChildWhichIsA("BasePart")
 
     local hl = Instance.new("Highlight")
-    hl.FillColor = Color3.fromRGB(0,255,120)
-    hl.OutlineColor = Color3.fromRGB(0,200,100)
+
+    hl.FillColor =
+    Color3.fromRGB(255,255,0)
+
+    hl.OutlineColor =
+    Color3.fromRGB(0,255,255)
+
     hl.FillTransparency = 0.5
     hl.OutlineTransparency = 0
-    hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+
+    hl.DepthMode =
+    Enum.HighlightDepthMode.AlwaysOnTop
+
     hl.Adornee = char
     hl.Parent = game.CoreGui
 
     local bill = Instance.new("BillboardGui")
-    bill.Size = UDim2.new(0,200,0,40)
+
+    bill.Size =
+    UDim2.new(0,200,0,40)
+
     bill.AlwaysOnTop = true
-    bill.StudsOffset = Vector3.new(0,3,0)
+
+    bill.StudsOffset =
+    Vector3.new(0,3,0)
+
     bill.Adornee = head
     bill.Parent = game.CoreGui
 
     local text = Instance.new("TextLabel")
-    text.Size = UDim2.new(1,0,1,0)
+
+    text.Size =
+    UDim2.new(1,0,1,0)
+
     text.BackgroundTransparency = 1
-    text.Text = player.DisplayName.." ("..player.Name..")"
-    text.TextColor3 = Color3.fromRGB(0,255,120)
+
+    text.Text =
+    player.DisplayName.." ("..player.Name..")"
+
+    text.TextColor3 =
+    Color3.fromRGB(255,192,203)
+
     text.TextStrokeTransparency = 0
     text.TextScaled = true
-    text.Font = Enum.Font.SourceSansBold
+
+    text.Font =
+    Enum.Font.SourceSansBold
+
     text.Parent = bill
 
     ESP[player] = {
@@ -768,7 +583,9 @@ end
 
 local function setupPlayer(player)
 
-    if player == LocalPlayer then return end
+    if player == LocalPlayer then
+        return
+    end
 
     player.CharacterAdded:Connect(function()
 
@@ -783,6 +600,7 @@ local function setupPlayer(player)
     if player.Character then
 
         task.wait(0.3)
+
         createESP(player)
 
     end
@@ -796,30 +614,36 @@ end
 Players.PlayerAdded:Connect(setupPlayer)
 
 Players.PlayerRemoving:Connect(function(player)
+
     removeESP(player)
+
 end)
 
--------------------------------------------------
--- ESP TOGGLE
--------------------------------------------------
-
-Tabs.Main:AddToggle("ESP", {
+MainTab:Toggle({
     Title = "ESP Player",
-    Default = false,
+
     Callback = function(v)
 
         espEnabled = v
 
         if v then
 
-            for _,plr in pairs(Players:GetPlayers()) do
+            for _,plr in pairs(
+                Players:GetPlayers()
+            ) do
+
                 createESP(plr)
+
             end
 
         else
 
-            for _,plr in pairs(Players:GetPlayers()) do
+            for _,plr in pairs(
+                Players:GetPlayers()
+            ) do
+
                 removeESP(plr)
+
             end
 
         end
@@ -828,78 +652,322 @@ Tabs.Main:AddToggle("ESP", {
 })
 
 -------------------------------------------------
--- BRIGHT MODE
+-- AIMLOCK
 -------------------------------------------------
 
-local backup = {}
+local aimEnabled = false
+local aimFov = 200
+local targetPlayers = {}
 
-local function enableBright()
+local circle = Drawing.new("Circle")
 
-    backup = {
-        Brightness = Lighting.Brightness,
-        ClockTime = Lighting.ClockTime,
-        FogEnd = Lighting.FogEnd,
-        Ambient = Lighting.Ambient
-    }
+circle.Visible = false
+circle.Thickness = 2
 
-    Lighting.Brightness = 3
-    Lighting.ClockTime = 14
-    Lighting.FogEnd = 100000
-    Lighting.Ambient = Color3.new(1,1,1)
+circle.Color =
+Color3.fromRGB(0,255,255)
 
-end
+circle.Filled = false
 
-local function disableBright()
+RunService.RenderStepped:Connect(function()
 
-    for k,v in pairs(backup) do
-        Lighting[k] = v
+    if aimEnabled then
+
+        circle.Visible = true
+        circle.Position = UIS:GetMouseLocation()
+        circle.Radius = aimFov
+
+    else
+
+        circle.Visible = false
+
+    end
+
+end)
+
+-------------------------------------------------
+-- PLAYER LIST
+-------------------------------------------------
+
+local playerList = {}
+
+local function refreshAim()
+
+    playerList = {}
+
+    for _,plr in pairs(
+        Players:GetPlayers()
+    ) do
+
+        if plr ~= LocalPlayer then
+
+            table.insert(
+                playerList,
+                plr.Name
+            )
+
+        end
+
     end
 
 end
 
-Tabs.Main:AddToggle("BrightMode", {
-    Title = "Bright Mode",
-    Default = false,
+refreshAim()
+
+-------------------------------------------------
+-- DROPDOWN
+-------------------------------------------------
+
+AimlockTab:Dropdown({
+    Title = "Select Target",
+    Values = playerList,
+
+    Callback = function(Value)
+
+        targetPlayers = {}
+
+        local plr =
+        Players:FindFirstChild(Value)
+
+        if plr then
+
+            table.insert(
+                targetPlayers,
+                plr
+            )
+
+        end
+
+    end
+})
+
+-------------------------------------------------
+-- AIMLOCK TOGGLE
+-------------------------------------------------
+
+AimlockTab:Toggle({
+    Title = "Aimlock",
+
     Callback = function(v)
 
-        if v then
-            enableBright()
-        else
-            disableBright()
+        aimEnabled = v
+
+    end
+})
+
+-------------------------------------------------
+-- FOV
+-------------------------------------------------
+
+AimlockTab:Slider({
+    Title = "FOV",
+
+    Value = {
+        Min = 50,
+        Max = 500,
+        Default = 200
+    },
+
+    Callback = function(v)
+
+        aimFov = v
+
+    end
+})
+
+-------------------------------------------------
+-- GET CLOSEST
+-------------------------------------------------
+
+local function getClosest()
+
+    local closest = nil
+    local shortest = aimFov
+
+    for _,plr in pairs(targetPlayers) do
+
+        if plr
+        and plr.Character
+        and plr.Character:FindFirstChild("Head") then
+
+            local head =
+            plr.Character.Head
+
+            local pos, visible =
+            Camera:WorldToViewportPoint(
+                head.Position
+            )
+
+            if visible then
+
+                local distance =
+                (
+                    Vector2.new(
+                        pos.X,
+                        pos.Y
+                    )
+                    -
+                    UIS:GetMouseLocation()
+                ).Magnitude
+
+                if distance < shortest then
+
+                    shortest = distance
+                    closest = head
+
+                end
+
+            end
+
         end
 
     end
-})
+
+    return closest
+
+end
 
 -------------------------------------------------
--- FIX LAG
+-- AIM LOOP
 -------------------------------------------------
 
-Tabs.More:AddButton({
-    Title = "Fix Lag",
+RunService.RenderStepped:Connect(function()
+
+    if not aimEnabled then
+        return
+    end
+
+    local target =
+    getClosest()
+
+    if target then
+
+        Camera.CFrame =
+        CFrame.lookAt(
+            Camera.CFrame.Position,
+            target.Position
+        )
+
+    end
+
+end)
+
+
+
+-------------------------------------------------
+-- COMBAT
+-------------------------------------------------
+
+CombatTab:Button({
+    Title = "Fling GUI",
+
     Callback = function()
 
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem/refs/heads/main/FixLag"))()
+        loadstring(game:HttpGet(
+            "https://raw.githubusercontent.com/Dumemayhieuoi123/chamucyeuem/refs/heads/main/fling"
+        ))()
+
+    end
+})
+-------------------------------------------------
+-- Aimlock button
+-------------------------------------------------
+
+AimlockTab:Button({
+    Title = "Note: Adjust the FOV for it to work, and the selected object must be inside the circle.",
+
+    Callback = function()
+
+
 
     end
 })
 
-
 -------------------------------------------------
--- STATUS
+-- MORE
 -------------------------------------------------
 
-Tabs.More:AddParagraph({
-    Title = "15T_Pro Executor",
-    Content = "(coming soon) : 🔴"
+MoreTab:Button({
+    Title = "Fix Lag",
+
+    Callback = function()
+
+        loadstring(game:HttpGet(
+            "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem/refs/heads/main/FixLag"
+        ))()
+
+    end
 })
 
-Tabs.More:AddParagraph({
-    Title = "15T_Pro Hub",
-    Content = "🟢"
+MoreTab:Button({
+    Title = "15T_Pro Hub: 🟢",
+
+    Callback = function()
+
+
+
+    end
 })
 
-local menuVisible = true
+MoreTab:Button({
+    Title = "15T_Pro Executor: 🔴(coming soon)",
+
+    Callback = function()
+
+
+
+    end
+})
+-------------------------------------------------
+-- SETTINGS
+-------------------------------------------------
+local Themes = {
+    "Dark",
+    "Light",
+    "Midnight",
+    "Red",
+    "Emerald",
+    "Rose"
+}
+
+SettingsTab:Dropdown({
+    Title = "Theme",
+
+    Values = Themes,
+
+    Default = SavedTheme,
+
+    Callback = function(theme)
+
+        -------------------------------------------------
+        -- APPLY
+        -------------------------------------------------
+
+        WindUI:SetTheme(theme)
+
+        -------------------------------------------------
+        -- SAVE
+        -------------------------------------------------
+
+        pcall(function()
+
+            if writefile then
+
+                writefile(
+                    ThemeFile,
+                    theme
+                )
+
+            end
+
+        end)
+
+    end
+})
+
+-------------------------------------------------
+-- CTRL TOGGLE
+-------------------------------------------------
 
 UIS.InputBegan:Connect(function(input,gp)
 
@@ -907,162 +975,213 @@ UIS.InputBegan:Connect(function(input,gp)
 
     if input.KeyCode == Enum.KeyCode.LeftControl then
 
-        menuVisible = not menuVisible
-
-        Window:Minimize(not menuVisible)
+        Window:Toggle()
 
     end
 
 end)
 
 -------------------------------------------------
--- NOTIFY
+-- KEEP UI ON TOP
 -------------------------------------------------
 
-Fluent:Notify({
-    Title = "✨ Welcome",
-    Content = "Yo Whats Up!",
-    Duration = 7
-})
+task.spawn(function()
 
-Fluent:Notify({
-    Title = "Status",
-    Content = "15T_Pro Hub : 🟢",
-    Duration = 7
-})
+    while task.wait(1) do
 
------ Ctrl
-local menuVisible = true
+        pcall(function()
 
-UIS.InputBegan:Connect(function(input,gp)
+            for _,v in pairs(
+                (gethui and gethui() or game.CoreGui):GetChildren()
+            ) do
 
-    if gp then return end
+                if v:IsA("ScreenGui") then
 
-    if input.KeyCode == Enum.KeyCode.LeftControl then
+                    if tostring(v.Name):lower():find("wind") then
 
-        menuVisible = not menuVisible
+                        v.DisplayOrder =
+                        999999999
 
-        Window:Minimize(not menuVisible)
+                    end
+
+                end
+
+            end
+
+        end)
 
     end
 
 end)
 
 -------------------------------------------------
--- FLUENT LOGO TOGGLE
+-- TOGGLE GUI
 -------------------------------------------------
 
-local CoreGui = game:GetService("CoreGui")
+local ToggleGui = Instance.new("ScreenGui")
+ToggleGui.Name = "15T_Toggle"
 
-local LogoGui = Instance.new("ScreenGui")
-local ToggleButton = Instance.new("ImageButton")
-local UICorner = Instance.new("UICorner")
+ToggleGui.Parent =
+gethui and gethui()
+or game.CoreGui
 
-local menuVisible = true
+ToggleGui.ResetOnSpawn = false
+ToggleGui.IgnoreGuiInset = true
 
--------------------------------------------------
--- GUI
--------------------------------------------------
-
-LogoGui.Name = "15TLogo"
-LogoGui.ResetOnSpawn = false
-LogoGui.Parent = CoreGui
-LogoGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ToggleGui.DisplayOrder = 999999999
+ToggleGui.ZIndexBehavior =
+Enum.ZIndexBehavior.Global
 
 -------------------------------------------------
 -- BUTTON
 -------------------------------------------------
 
-ToggleButton.Name = "ToggleButton"
-ToggleButton.Parent = LogoGui
+local ToggleButton =
+Instance.new("ImageButton")
 
-ToggleButton.BackgroundColor3 =
-Color3.fromRGB(255,255,255)
-
-ToggleButton.BorderSizePixel = 0
-
-ToggleButton.Position =
-UDim2.new(0.1,0,0.4,0)
+ToggleButton.Parent = ToggleGui
 
 ToggleButton.Size =
-UDim2.new(0,50,0,50)
+UDim2.new(0,45,0,45)
+
+ToggleButton.Position =
+UDim2.new(0,15,0.75,-20)
+
+ToggleButton.BackgroundColor3 =
+Color3.fromRGB(20,20,20)
+
+ToggleButton.BorderSizePixel = 0
 
 ToggleButton.Image =
 "rbxassetid://118444257763865"
 
-ToggleButton.Draggable = true
+ToggleButton.ScaleType =
+Enum.ScaleType.Crop
 
-UICorner.CornerRadius = UDim.new(1,0)
-UICorner.Parent = ToggleButton
-
--------------------------------------------------
--- TOGGLE FLUENT ONLY
--------------------------------------------------
-
-local function ToggleMenu()
-
-    menuVisible = not menuVisible
-
-    pcall(function()
-
-        Window:Minimize(
-            not menuVisible
-        )
-
-    end)
-
-end
+ToggleButton.ZIndex = 999999999
 
 -------------------------------------------------
--- CLICK
+-- ROUND
+-------------------------------------------------
+
+local Corner =
+Instance.new("UICorner")
+
+Corner.CornerRadius =
+UDim.new(1,0)
+
+Corner.Parent = ToggleButton
+
+-------------------------------------------------
+-- STROKE
+-------------------------------------------------
+
+local Stroke =
+Instance.new("UIStroke")
+
+Stroke.Color =
+Color3.fromRGB(0,255,255)
+
+Stroke.Thickness = 2
+
+Stroke.Parent = ToggleButton
+
+-------------------------------------------------
+-- TOGGLE
 -------------------------------------------------
 
 ToggleButton.MouseButton1Click:Connect(function()
 
-    ToggleMenu()
+    Window:Toggle()
 
 end)
 
 -------------------------------------------------
--- EFFECT
+-- DRAG
 -------------------------------------------------
 
-ToggleButton.MouseButton1Down:Connect(function()
+local dragging = false
+local dragInput
+local dragStart
+local startPos
 
-    ToggleButton:TweenSize(
-        UDim2.new(0,45,0,45),
-        "Out",
-        "Quad",
-        0.1,
-        true
-    )
+ToggleButton.InputBegan:Connect(function(input)
 
-end)
+    if input.UserInputType ==
+    Enum.UserInputType.MouseButton1 then
 
-ToggleButton.MouseButton1Up:Connect(function()
+        dragging = true
+        dragStart = input.Position
+        startPos = ToggleButton.Position
 
-    ToggleButton:TweenSize(
-        UDim2.new(0,50,0,50),
-        "Out",
-        "Quad",
-        0.1,
-        true
-    )
+        input.Changed:Connect(function()
 
-end)
+            if input.UserInputState ==
+            Enum.UserInputState.End then
 
--------------------------------------------------
--- CTRL
--------------------------------------------------
+                dragging = false
 
-UIS.InputBegan:Connect(function(input,gp)
+            end
 
-    if gp then return end
-
-    if input.KeyCode == Enum.KeyCode.LeftControl then
-
-        ToggleMenu()
+        end)
 
     end
 
 end)
+
+ToggleButton.InputChanged:Connect(function(input)
+
+    if input.UserInputType ==
+    Enum.UserInputType.MouseMovement then
+
+        dragInput = input
+
+    end
+
+end)
+
+UIS.InputChanged:Connect(function(input)
+
+    if input == dragInput
+    and dragging then
+
+        local delta =
+        input.Position - dragStart
+
+        ToggleButton.Position =
+        UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+
+    end
+
+end)
+
+-------------------------------------------------
+-- FORCE TOP
+-------------------------------------------------
+
+task.spawn(function()
+
+    while task.wait() do
+
+        pcall(function()
+
+            ToggleGui.DisplayOrder =
+            999999999
+
+        end)
+
+    end
+
+end)
+
+-------------------------done
+WindUI:Notify({
+    Title = "15T_Pro Hub",
+    Content = "Welcome!!!",
+    Duration = 5
+})
