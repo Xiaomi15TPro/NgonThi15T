@@ -19,7 +19,7 @@ local Camera = workspace.CurrentCamera
 -------------------------------------------------
 
 local ThemeFile = "15T_THEME.txt"
-local SavedTheme = ""
+local SavedTheme = "Midnight"
 
 pcall(function()
 
@@ -39,7 +39,7 @@ end)
 -------------------------------------------------
 
 local WindUI = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"
+"https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"
 ))()
 
 -------------------------------------------------
@@ -51,11 +51,16 @@ local Window = WindUI:CreateWindow({
     Icon = "rbxassetid://118444257763865",
     Author = "By ChaMuc",
     Folder = "15T_ProHub (Beta)",
-    Size = UDim2.fromOffset(580,460),
+    Size = UDim2.fromOffset(730,520),
     Transparent = true,
-    Theme = "Dark",
+    Theme = "Midnight",
     SideBarWidth = 180,
-    HasOutline = false
+    HasOutline = false,
+    User = {
+    Enabled = true,
+    Anonymous = true
+    }
+
 })
 
 -------------------------------------------------
@@ -921,33 +926,27 @@ MoreTab:Button({
 -------------------------------------------------
 -- SETTINGS
 -------------------------------------------------
-local Themes = {
-    "Dark",
-    "Light",
-    "Midnight",
-    "Red",
-    "Emerald",
-    "Rose"
-}
-
 SettingsTab:Dropdown({
     Title = "Theme",
 
-    Values = Themes,
+    Values = {
+        "Dark",
+        "Light",
+        "Midnight",
+        "Red",
+        "Emerald",
+        "Rose"
+    },
 
     Default = SavedTheme,
 
     Callback = function(theme)
 
-        -------------------------------------------------
-        -- APPLY
-        -------------------------------------------------
+        pcall(function()
 
-        WindUI:SetTheme(theme)
+            WindUI:SetTheme(theme)
 
-        -------------------------------------------------
-        -- SAVE
-        -------------------------------------------------
+        end)
 
         pcall(function()
 
@@ -955,7 +954,7 @@ SettingsTab:Dropdown({
 
                 writefile(
                     ThemeFile,
-                    theme
+                    tostring(theme)
                 )
 
             end
