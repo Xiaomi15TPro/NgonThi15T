@@ -862,6 +862,9 @@ end)
 -------------------------------------------------
 -- COMBAT
 -------------------------------------------------
+CombatTab:Section({
+    Title = "Fling"
+})
 
 CombatTab:Button({
     Title = "Fling GUI",
@@ -874,9 +877,48 @@ CombatTab:Button({
 
     end
 })
+
+--------anti fling----
+
+local AntiFling = false
+
+CombatTab:Toggle({
+    Title = "Anti Fling (deo khac gi noclip)",
+    Default = false,
+
+    Callback = function(v)
+        AntiFling = v
+    end
+})
+
+RunService.Stepped:Connect(function()
+
+    if not AntiFling then
+        return
+    end
+
+    for _,plr in pairs(Players:GetPlayers()) do
+
+        if plr ~= LocalPlayer and plr.Character then
+
+            for _,part in pairs(plr.Character:GetDescendants()) do
+
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+
+            end
+
+        end
+
+    end
+
+end)
+
 -------------------------------------------------
 -- Aimlock button
 -------------------------------------------------
+
 
 AimlockTab:Button({
     Title = "Note: Adjust the FOV for it to work, and the selected object must be inside the circle.",
@@ -891,6 +933,9 @@ AimlockTab:Button({
 -------------------------------------------------
 -- MORE
 -------------------------------------------------
+MoreTab:Section({
+    Title = "Real More"
+})
 
 MoreTab:Button({
     Title = "Fix Lag",
@@ -902,6 +947,20 @@ MoreTab:Button({
         ))()
 
     end
+})
+
+MoreTab:Button({
+    Title = "Shiftlock (click)",
+
+    Callback = function()
+
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ltseverydayyou/uuuuuuu/refs/heads/main/shiftlock"))()
+
+    end
+})
+
+MoreTab:Section({
+    Title = "Status"
 })
 
 MoreTab:Button({
@@ -926,8 +985,12 @@ MoreTab:Button({
 -------------------------------------------------
 -- SETTINGS
 -------------------------------------------------
+SettingsTab:Section({
+    Title = "Themes"
+})
+
 SettingsTab:Dropdown({
-    Title = "Theme",
+    Title = "Themes",
 
     Values = {
         "Dark",
