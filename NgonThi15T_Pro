@@ -982,7 +982,7 @@ MoreTab:Button({
 
     end
 })
--------------------------------------------------
+------------------------------------------------
 -- SETTINGS
 -------------------------------------------------
 SettingsTab:Section({
@@ -1001,7 +1001,7 @@ SettingsTab:Dropdown({
         "Rose"
     },
 
-    Default = SavedTheme,
+Default = SavedTheme,
 
     Callback = function(theme)
 
@@ -1026,22 +1026,6 @@ SettingsTab:Dropdown({
 
     end
 })
-
--------------------------------------------------
--- CTRL TOGGLE
--------------------------------------------------
-
-UIS.InputBegan:Connect(function(input,gp)
-
-    if gp then return end
-
-    if input.KeyCode == Enum.KeyCode.LeftControl then
-
-        Window:Toggle()
-
-    end
-
-end)
 
 -------------------------------------------------
 -- KEEP UI ON TOP
