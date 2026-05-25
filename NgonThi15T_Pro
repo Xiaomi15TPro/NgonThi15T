@@ -22,25 +22,25 @@ local ThemeFile = "15T_THEME.txt"
 local SavedTheme = "Midnight"
 
 pcall(function()
+    if isfile and isfile(ThemeFile) then
+        local data = readfile(ThemeFile)
 
-    if isfile
-    and readfile
-    and isfile(ThemeFile) then
-
-        SavedTheme =
-        readfile(ThemeFile)
-
+        if data and data ~= "" then
+            SavedTheme = tostring(data)
+        end
     end
-
 end)
+
+if not SavedTheme or SavedTheme == "" then
+    SavedTheme = "Midnight"
+end
+
 
 -------------------------------------------------
 -- LOAD WINDUI
 -------------------------------------------------
 
-local WindUI = loadstring(game:HttpGet(
-"https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"
-))()
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
 -------------------------------------------------
 -- WINDOW
@@ -982,16 +982,72 @@ MoreTab:Button({
 
     end
 })
-------------------------------------------------
--- SETTINGS
+
 -------------------------------------------------
-SettingsTab:Section({
-    Title = "Themes"
+-- SERVER INFO
+-------------------------------------------------
+MoreTab:Section({
+    Title = "Time"
+})
+local joinTime = tick()
+
+local ServerAgeParagraph = MoreTab:Paragraph({
+    Title = "Server Info",
+    Desc = "Loading..."
 })
 
-SettingsTab:Dropdown({
-    Title = "Themes",
+local function formatTime(seconds)
 
+    local days = math.floor(seconds / 86400)
+    seconds = seconds % 86400
+
+    local hours = math.floor(seconds / 3600)
+    seconds = seconds % 3600
+
+    local mins = math.floor(seconds / 60)
+    seconds = math.floor(seconds % 60)
+
+    if days > 0 then
+        return string.format(
+            "%dd %02dh %02dm %02ds",
+            days,hours,mins,seconds
+        )
+    end
+
+    return string.format(
+        "%02dh %02dm %02ds",
+        hours,mins,seconds
+    )
+end
+
+task.spawn(function()
+
+    while true do
+
+        local serverAge =
+        workspace.DistributedGameTime
+
+        local playTime =
+        tick() - joinTime
+
+        ServerAgeParagraph:SetDesc(
+            "Server Age : "
+            .. formatTime(serverAge)
+            .. "\nTime Played : "
+            .. formatTime(playTime)
+        )
+
+        task.wait(1)
+
+    end
+
+end)
+
+-------------------------------------------------
+-- SETTINGS
+-------------------------------------------------
+SettingsTab:Dropdown({
+    Title = "Theme",
     Values = {
         "Dark",
         "Light",
@@ -1001,31 +1057,31 @@ SettingsTab:Dropdown({
         "Rose"
     },
 
-Default = SavedTheme,
+    Default = SavedTheme,
 
     Callback = function(theme)
+        WindUI:SetTheme(theme)
 
-        pcall(function()
-
-            WindUI:SetTheme(theme)
-
-        end)
-
-        pcall(function()
-
-            if writefile then
-
-                writefile(
-                    ThemeFile,
-                    tostring(theme)
-                )
-
-            end
-
-        end)
-
+        if writefile then
+            writefile(ThemeFile, theme)
+        end
     end
 })
+-------------------------------------------------
+-- CTRL TOGGLE
+-------------------------------------------------
+
+UIS.InputBegan:Connect(function(input,gp)
+
+    if gp then return end
+
+    if input.KeyCode == Enum.KeyCode.LeftControl then
+
+        Window:Toggle()
+
+    end
+
+end)
 
 -------------------------------------------------
 -- KEEP UI ON TOP
@@ -1231,3 +1287,12 @@ WindUI:Notify({
     Content = "Welcome!!!",
     Duration = 5
 })
+
+----anti kick afk
+local Players = game:GetService("Players")
+local VirtualUser = game:GetService("VirtualUser")
+
+Players.LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
