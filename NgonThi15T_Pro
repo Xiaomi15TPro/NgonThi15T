@@ -875,7 +875,7 @@ CombatTab:Button({
 local AntiFling = false
 
 CombatTab:Toggle({
-    Title = "Anti Fling (deo khac gi noclip)",
+    Title = "Anti Fling",
     Default = false,
 
     Callback = function(v)
@@ -1294,5 +1294,3 @@ Players.LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
 end)
-
-Print("địt mẹ mày con chó")
