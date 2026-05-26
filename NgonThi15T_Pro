@@ -23,17 +23,9 @@ local SavedTheme = "Midnight"
 
 pcall(function()
     if isfile and isfile(ThemeFile) then
-        local data = readfile(ThemeFile)
-
-        if data and data ~= "" then
-            SavedTheme = tostring(data)
-        end
+        SavedTheme = readfile(ThemeFile)
     end
 end)
-
-if not SavedTheme or SavedTheme == "" then
-    SavedTheme = "Midnight"
-end
 
 
 -------------------------------------------------
@@ -1046,8 +1038,13 @@ end)
 -------------------------------------------------
 -- SETTINGS
 -------------------------------------------------
+SettingsTab:Section({
+    Title = "Themes"
+})
+
 SettingsTab:Dropdown({
-    Title = "Theme",
+    Title = "Themes",
+
     Values = {
         "Dark",
         "Light",
@@ -1059,29 +1056,30 @@ SettingsTab:Dropdown({
 
     Default = SavedTheme,
 
-    Callback = function(theme)
-        WindUI:SetTheme(theme)
 
-        if writefile then
-            writefile(ThemeFile, theme)
-        end
+    Callback = function(theme)
+
+        pcall(function()
+
+            WindUI:SetTheme(theme)
+
+        end)
+
+        pcall(function()
+
+            if writefile then
+
+                writefile(
+                    ThemeFile,
+                    tostring(theme)
+                )
+
+            end
+
+        end)
+
     end
 })
--------------------------------------------------
--- CTRL TOGGLE
--------------------------------------------------
-
-UIS.InputBegan:Connect(function(input,gp)
-
-    if gp then return end
-
-    if input.KeyCode == Enum.KeyCode.LeftControl then
-
-        Window:Toggle()
-
-    end
-
-end)
 
 -------------------------------------------------
 -- KEEP UI ON TOP
@@ -1296,3 +1294,5 @@ Players.LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
 end)
+
+Print("địt mẹ mày con chó")
