@@ -39,8 +39,8 @@ local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/rel
 -------------------------------------------------
 
 local Window = WindUI:CreateWindow({
-    Title = "15T_Pro Hub (Beta)",
-    Icon = "rbxassetid://118444257763865",
+    Title = "15T_Pro Hub (Fun Script Beta)",
+    Icon = "rbxassetid://138625615745763",
     Author = "By ChaMuc",
     Folder = "15T_ProHub (Beta)",
     Size = UDim2.fromOffset(730,520),
@@ -1153,7 +1153,7 @@ Color3.fromRGB(20,20,20)
 ToggleButton.BorderSizePixel = 0
 
 ToggleButton.Image =
-"rbxassetid://118444257763865"
+"rbxassetid://80999047715822"
 
 ToggleButton.ScaleType =
 Enum.ScaleType.Crop
