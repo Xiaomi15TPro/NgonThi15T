@@ -418,55 +418,55 @@ RunService.RenderStepped:Connect(function()
 
     end
 
-    -------------------------------------------------
-    -- MOVE
-    -------------------------------------------------
+-------------------------------------------------
+-- MOVE
+-------------------------------------------------
 
-    local move =
-    Vector3.zero
+local move =
+Vector3.zero
 
-    -------------------------------------------------
-    -- PC
-    -------------------------------------------------
+-------------------------------------------------
+-- PC
+-------------------------------------------------
 
-    if not UIS.TouchEnabled then
+if not UIS.TouchEnabled then
 
-        if UIS:IsKeyDown(
-            Enum.KeyCode.W
-        ) then
+    if UIS:IsKeyDown(
+        Enum.KeyCode.W
+    ) then
 
-            move +=
-            Camera.CFrame.LookVector
+        move +=
+        Camera.CFrame.LookVector
 
-        end
+    end
 
-        if UIS:IsKeyDown(
-            Enum.KeyCode.S
-        ) then
+    if UIS:IsKeyDown(
+        Enum.KeyCode.S
+    ) then
 
-            move -=
-            Camera.CFrame.LookVector
+        move -=
+        Camera.CFrame.LookVector
 
-        end
+    end
 
-        if UIS:IsKeyDown(
-            Enum.KeyCode.A
-        ) then
+    if UIS:IsKeyDown(
+        Enum.KeyCode.A
+    ) then
 
-            move -=
-            Camera.CFrame.RightVector
+        move -=
+        Camera.CFrame.RightVector
 
-        end
+    end
 
-        if UIS:IsKeyDown(
-            Enum.KeyCode.D
-        ) then
+    if UIS:IsKeyDown(
+        Enum.KeyCode.D
+    ) then
 
-            move +=
-            Camera.CFrame.RightVector
+        move +=
+        Camera.CFrame.RightVector
 
-        end
-    
+    end
+
 -------------------------------------------------
 -- MOBILE
 -------------------------------------------------
@@ -489,42 +489,28 @@ else
             Camera.CFrame
 
             -------------------------------------------------
-            -- HORIZONTAL
+            -- FORWARD
             -------------------------------------------------
 
-            local flatLook =
-            Vector3.new(
-                cam.LookVector.X,
-                0,
-                cam.LookVector.Z
-            ).Unit
-
-            local flatRight =
-            Vector3.new(
-                cam.RightVector.X,
-                0,
-                cam.RightVector.Z
-            ).Unit
+            local forward =
+            cam.LookVector
 
             -------------------------------------------------
-            -- NORMAL MOVE
+            -- RIGHT
+            -------------------------------------------------
+
+            local right =
+            cam.RightVector
+
+            -------------------------------------------------
+            -- MOBILE MOVE
             -------------------------------------------------
 
             move +=
-            flatLook * dir.Z
+            forward * (-dir.Z)
 
             move +=
-            flatRight * dir.X
-
-            -------------------------------------------------
-            -- UP / DOWN
-            -------------------------------------------------
-
-            move += Vector3.new(
-                0,
-                cam.LookVector.Y * math.abs(dir.Z),
-                0
-            )
+            right * dir.X
 
         end
 
@@ -532,17 +518,16 @@ else
 
 end
 
-    -------------------------------------------------
-    -- SPEED
-    -------------------------------------------------
+-------------------------------------------------
+-- SPEED
+-------------------------------------------------
 
-    if move.Magnitude > 0 then
+if move.Magnitude > 0 then
 
-        move =
-        move.Unit * flySpeed
+    move =
+    move.Unit * flySpeed
 
-    end
-
+end
     -------------------------------------------------
     -- APPLY
     -------------------------------------------------
