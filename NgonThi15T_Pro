@@ -467,11 +467,11 @@ RunService.RenderStepped:Connect(function()
 
         end
     
-    -------------------------------------------------
-    -- MOBILE
-    -------------------------------------------------
+-------------------------------------------------
+-- MOBILE
+-------------------------------------------------
 
-    else
+else
 
     local hum =
     char:FindFirstChildOfClass(
@@ -489,14 +489,32 @@ RunService.RenderStepped:Connect(function()
             Camera.CFrame
 
             -------------------------------------------------
-            -- FIX DIRECTION
+            -- HORIZONTAL
+            -------------------------------------------------
+
+            local flatLook =
+            Vector3.new(
+                cam.LookVector.X,
+                0,
+                cam.LookVector.Z
+            ).Unit
+
+            local flatRight =
+            Vector3.new(
+                cam.RightVector.X,
+                0,
+                cam.RightVector.Z
+            ).Unit
+
+            -------------------------------------------------
+            -- NORMAL MOVE
             -------------------------------------------------
 
             move +=
-            cam.LookVector * dir.Z
+            flatLook * dir.Z
 
             move +=
-            cam.RightVector * dir.X
+            flatRight * dir.X
 
             -------------------------------------------------
             -- UP / DOWN
@@ -504,7 +522,7 @@ RunService.RenderStepped:Connect(function()
 
             move += Vector3.new(
                 0,
-                cam.LookVector.Y * dir.Z,
+                cam.LookVector.Y * math.abs(dir.Z),
                 0
             )
 
@@ -513,7 +531,6 @@ RunService.RenderStepped:Connect(function()
     end
 
 end
-
 
     -------------------------------------------------
     -- SPEED
