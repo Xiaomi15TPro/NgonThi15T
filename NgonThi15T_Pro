@@ -466,53 +466,54 @@ RunService.RenderStepped:Connect(function()
             Camera.CFrame.RightVector
 
         end
-
+    
     -------------------------------------------------
     -- MOBILE
     -------------------------------------------------
 
     else
 
-        local hum =
-        char:FindFirstChildOfClass(
-            "Humanoid"
-        )
+    local hum =
+    char:FindFirstChildOfClass(
+        "Humanoid"
+    )
 
-        if hum then
+    if hum then
 
-            local dir =
-            hum.MoveDirection
+        local dir =
+        hum.MoveDirection
 
-            if dir.Magnitude > 0 then
+        if dir.Magnitude > 0 then
 
-                move +=
-                (
-                    Camera.CFrame.LookVector
-                    * -dir.Z
-                )
+            local cam =
+            Camera.CFrame
 
-                move +=
-                (
-                    Camera.CFrame.RightVector
-                    * dir.X
-                )
+            -------------------------------------------------
+            -- FIX DIRECTION
+            -------------------------------------------------
 
-                -------------------------------------------------
-                -- UP / DOWN
-                -------------------------------------------------
+            move +=
+            cam.LookVector * dir.Z
 
-                move += Vector3.new(
-                    0,
-                    Camera.CFrame.LookVector.Y
-                    * -dir.Z,
-                    0
-                )
+            move +=
+            cam.RightVector * dir.X
 
-            end
+            -------------------------------------------------
+            -- UP / DOWN
+            -------------------------------------------------
+
+            move += Vector3.new(
+                0,
+                cam.LookVector.Y * dir.Z,
+                0
+            )
 
         end
 
     end
+
+end
+
 
     -------------------------------------------------
     -- SPEED
