@@ -213,16 +213,26 @@ local function isTyping()
 
 end
 
+-------------------------------------------------
+-- STOP FLY
+-------------------------------------------------
+
 local function stopFlyPhysics()
 
-    local char = LocalPlayer.Character
+    local char =
+    LocalPlayer.Character
+
     if not char then return end
 
     local hum =
-    char:FindFirstChildOfClass("Humanoid")
+    char:FindFirstChildOfClass(
+        "Humanoid"
+    )
 
     local root =
-    char:FindFirstChild("HumanoidRootPart")
+    char:FindFirstChild(
+        "HumanoidRootPart"
+    )
 
     if hum then
         hum.PlatformStand = false
@@ -239,7 +249,13 @@ local function stopFlyPhysics()
     end
 
     if root then
-        root.Velocity = Vector3.zero
+
+        root.Velocity =
+        Vector3.zero
+
+        root.AssemblyLinearVelocity =
+        Vector3.zero
+
     end
 
 end
@@ -282,14 +298,20 @@ MainTab:Toggle({
             return
         end
 
-        local char = LocalPlayer.Character
+        local char =
+        LocalPlayer.Character
+
         if not char then return end
 
         local hum =
-        char:FindFirstChildOfClass("Humanoid")
+        char:FindFirstChildOfClass(
+            "Humanoid"
+        )
 
         local root =
-        char:FindFirstChild("HumanoidRootPart")
+        char:FindFirstChild(
+            "HumanoidRootPart"
+        )
 
         if not hum or not root then
             return
@@ -297,13 +319,41 @@ MainTab:Toggle({
 
         hum.PlatformStand = true
 
-        BV = Instance.new("BodyVelocity")
-        BV.MaxForce = Vector3.new(9e9,9e9,9e9)
-        BV.Velocity = Vector3.zero
+        -------------------------------------------------
+        -- BODY VELOCITY
+        -------------------------------------------------
+
+        BV = Instance.new(
+            "BodyVelocity"
+        )
+
+        BV.MaxForce =
+        Vector3.new(
+            9e9,
+            9e9,
+            9e9
+        )
+
+        BV.Velocity =
+        Vector3.zero
+
         BV.Parent = root
 
-        BG = Instance.new("BodyGyro")
-        BG.MaxTorque = Vector3.new(9e9,9e9,9e9)
+        -------------------------------------------------
+        -- BODY GYRO
+        -------------------------------------------------
+
+        BG = Instance.new(
+            "BodyGyro"
+        )
+
+        BG.MaxTorque =
+        Vector3.new(
+            9e9,
+            9e9,
+            9e9
+        )
+
         BG.P = 9e4
         BG.Parent = root
 
@@ -344,39 +394,129 @@ RunService.RenderStepped:Connect(function()
     if not char then return end
 
     local root =
-    char:FindFirstChild("HumanoidRootPart")
+    char:FindFirstChild(
+        "HumanoidRootPart"
+    )
 
     if not root then return end
+
+    -------------------------------------------------
+    -- CHAT CHECK
+    -------------------------------------------------
 
     if isTyping() then
 
         if BV then
-            BV.Velocity = Vector3.zero
+            BV.Velocity =
+            Vector3.zero
         end
 
-        root.Velocity = Vector3.zero
+        root.Velocity =
+        Vector3.zero
 
         return
 
     end
 
-    local move = Vector3.zero
+    -------------------------------------------------
+    -- MOVE
+    -------------------------------------------------
 
-    if UIS:IsKeyDown(Enum.KeyCode.W) then
-        move += Camera.CFrame.LookVector
+    local move =
+    Vector3.zero
+
+    -------------------------------------------------
+    -- PC
+    -------------------------------------------------
+
+    if not UIS.TouchEnabled then
+
+        if UIS:IsKeyDown(
+            Enum.KeyCode.W
+        ) then
+
+            move +=
+            Camera.CFrame.LookVector
+
+        end
+
+        if UIS:IsKeyDown(
+            Enum.KeyCode.S
+        ) then
+
+            move -=
+            Camera.CFrame.LookVector
+
+        end
+
+        if UIS:IsKeyDown(
+            Enum.KeyCode.A
+        ) then
+
+            move -=
+            Camera.CFrame.RightVector
+
+        end
+
+        if UIS:IsKeyDown(
+            Enum.KeyCode.D
+        ) then
+
+            move +=
+            Camera.CFrame.RightVector
+
+        end
+
+    -------------------------------------------------
+    -- MOBILE
+    -------------------------------------------------
+
+    else
+
+        local hum =
+        char:FindFirstChildOfClass(
+            "Humanoid"
+        )
+
+        if hum then
+
+            local dir =
+            hum.MoveDirection
+
+            if dir.Magnitude > 0 then
+
+                move +=
+                (
+                    Camera.CFrame.LookVector
+                    * -dir.Z
+                )
+
+                move +=
+                (
+                    Camera.CFrame.RightVector
+                    * dir.X
+                )
+
+                -------------------------------------------------
+                -- UP / DOWN
+                -------------------------------------------------
+
+                move += Vector3.new(
+                    0,
+                    Camera.CFrame.LookVector.Y
+                    * -dir.Z,
+                    0
+                )
+
+            end
+
+        end
+
     end
 
-    if UIS:IsKeyDown(Enum.KeyCode.S) then
-        move -= Camera.CFrame.LookVector
-    end
-
-    if UIS:IsKeyDown(Enum.KeyCode.A) then
-        move -= Camera.CFrame.RightVector
-    end
-
-    if UIS:IsKeyDown(Enum.KeyCode.D) then
-        move += Camera.CFrame.RightVector
-    end
+    -------------------------------------------------
+    -- SPEED
+    -------------------------------------------------
 
     if move.Magnitude > 0 then
 
@@ -385,18 +525,26 @@ RunService.RenderStepped:Connect(function()
 
     end
 
+    -------------------------------------------------
+    -- APPLY
+    -------------------------------------------------
+
     if adminFly
     and BV
     and BG then
 
-        BV.Velocity = move
-        BG.CFrame = Camera.CFrame
+        BV.Velocity =
+        move
+
+        BG.CFrame =
+        Camera.CFrame
 
     end
 
     if velocityFly then
 
-        root.Velocity = move
+        root.AssemblyLinearVelocity =
+        move
 
     end
 
@@ -415,20 +563,47 @@ MainTab:Toggle({
 
         noclip = v
 
+        -------------------------------------------------
+        -- TURN OFF
+        -------------------------------------------------
+
+        if not noclip
+        and LocalPlayer.Character then
+
+            for _,part in pairs(
+                LocalPlayer.Character:GetDescendants()
+            ) do
+
+                if part:IsA("BasePart") then
+
+                    part.CanCollide = true
+
+                end
+
+            end
+
+        end
+
     end
 })
+
+-------------------------------------------------
+-- LOOP
+-------------------------------------------------
 
 RunService.Stepped:Connect(function()
 
     if noclip
     and LocalPlayer.Character then
 
-        for _,v in pairs(
+        for _,part in pairs(
             LocalPlayer.Character:GetDescendants()
         ) do
 
-            if v:IsA("BasePart") then
-                v.CanCollide = false
+            if part:IsA("BasePart") then
+
+                part.CanCollide = false
+
             end
 
         end
@@ -954,67 +1129,68 @@ MoreTab:Button({
 MoreTab:Section({
     Title = "Status"
 })
-
-MoreTab:Button({
-    Title = "15T_Pro Hub: 🟢",
-
-    Callback = function()
-
-
-
-    end
+MoreTab:Paragraph({
+    Title = "⭐",
+    Desc = [[
+=> 15T_Pro Hub: 🟢
+=> 15T_Pro Executor: 🔴(coming soon)
+]]
 })
 
-MoreTab:Button({
-    Title = "15T_Pro Executor: 🔴(coming soon)",
-
-    Callback = function()
-
-
-
-    end
+MoreTab:Section({
+    Title = "------------------"
 })
-
 -------------------------------------------------
 -- SERVER INFO
 -------------------------------------------------
-MoreTab:Section({
-    Title = "Time"
-})
+
 local joinTime = tick()
 
-local ServerAgeParagraph = MoreTab:Paragraph({
+-------------------------------------------------
+-- FORMAT TIME
+-------------------------------------------------
+
+local function formatTime(seconds)
+
+    seconds = math.floor(seconds)
+
+    local hours =
+    math.floor(seconds / 3600)
+
+    local minutes =
+    math.floor(
+        (seconds % 3600) / 60
+    )
+
+    local secs =
+    seconds % 60
+
+    return string.format(
+        "%02dh %02dm %02ds",
+        hours,
+        minutes,
+        secs
+    )
+
+end
+
+-------------------------------------------------
+-- PARAGRAPH
+-------------------------------------------------
+
+local ServerInfo =
+MoreTab:Paragraph({
     Title = "Server Info",
     Desc = "Loading..."
 })
 
-local function formatTime(seconds)
-
-    local days = math.floor(seconds / 86400)
-    seconds = seconds % 86400
-
-    local hours = math.floor(seconds / 3600)
-    seconds = seconds % 3600
-
-    local mins = math.floor(seconds / 60)
-    seconds = math.floor(seconds % 60)
-
-    if days > 0 then
-        return string.format(
-            "%dd %02dh %02dm %02ds",
-            days,hours,mins,seconds
-        )
-    end
-
-    return string.format(
-        "%02dh %02dm %02ds",
-        hours,mins,seconds
-    )
-end
+-------------------------------------------------
+-- UPDATE LOOP
+-------------------------------------------------
 
 task.spawn(function()
 
-    while true do
+    while task.wait(1) do
 
         local serverAge =
         workspace.DistributedGameTime
@@ -1022,18 +1198,37 @@ task.spawn(function()
         local playTime =
         tick() - joinTime
 
-        ServerAgeParagraph:SetDesc(
+        ServerInfo:SetDesc(
+
             "Server Age : "
             .. formatTime(serverAge)
-            .. "\nTime Played : "
-            .. formatTime(playTime)
-        )
 
-        task.wait(1)
+            .. "\n"
+
+            .. "Time Played : "
+            .. formatTime(playTime)
+
+        )
 
     end
 
 end)
+
+-------------------------------------------------
+-- UPDATE LOG
+-------------------------------------------------
+MoreTab:Section({
+    Title = "------------------"
+})
+
+MoreTab:Paragraph({
+    Title = "What's New",
+    Desc = [[
+• fixed mobile fly isnt work
+• fix noclip
+• fix server age
+]]
+})
 
 -------------------------------------------------
 -- SETTINGS
