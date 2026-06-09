@@ -1,21 +1,20 @@
 local PlaceId = game.PlaceId
 
-if PlaceId == 79268393072444 then ---sell lemon
+local Games = {
+    [79268393072444] = "https://www.xhider.xyz/raw/ChaMucNguyen/SellLemons",
+    [10449761463]    = "https://www.xhider.xyz/raw/ChaMucNguyen/ChaMucTSB",
+}
 
-    loadstring(game:HttpGet(
-        "https://www.xhider.xyz/raw/ChaMucNguyen/SellLemons"
-    ))()
+local DefaultScript = "https://www.xhider.xyz/raw/ChaMucNguyen/BuonCuoivcl"
 
-elseif PlaceId == 10449761463 then ---tsb
+local Url = Games[PlaceId] or DefaultScript
 
-    loadstring(game:HttpGet(
-        "https://www.xhider.xyz/raw/ChaMucNguyen/ChaMucTSB"
-    ))()
+local Success, Result = pcall(function()
+    return game:HttpGet(Url)
+end)
 
+if Success and Result then
+    loadstring(Result)()
 else
-
-    loadstring(game:HttpGet(
-        "https://www.xhider.xyz/raw/ChaMucNguyen/BuonCuoivcl"
-    ))()
-
+    warn("Failed to load script:", Result)
 end
