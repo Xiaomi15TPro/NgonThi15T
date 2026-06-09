@@ -13,3 +13,11 @@ else
     ))()
 
 end
+
+if PlaceId == 79268393072444 then -- Bán Chanh
+
+    loadstring(game:HttpGet(
+        "https://www.xhider.xyz/raw/ChaMucNguyen/SellLemon"
+    ))()
+
+else
