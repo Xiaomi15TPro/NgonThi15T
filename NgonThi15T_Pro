@@ -3,7 +3,7 @@ local PlaceId = game.PlaceId
 if PlaceId == 79268393072444 then ---sell lemon
 
     loadstring(game:HttpGet(
-        "https://www.xhider.xyz/raw/ChaMucNguyen/SellLemon"
+        "https://www.xhider.xyz/raw/ChaMucNguyen/SellLemons"
     ))()
 
 elseif PlaceId == 10449761463 then ---tsb
