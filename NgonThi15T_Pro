@@ -1,13 +1,10 @@
 local PlaceId = game.PlaceId
 
-    loadstring(game:HttpGet(
-        "https://www.xhider.xyz/raw/ChaMucNguyen/BuonCuoivcl"
-    ))()
 
 if PlaceId == 79268393072444 then -- Bán Chanh
 
     loadstring(game:HttpGet(
-        "https://www.xhider.xyz/raw/ChaMucNguyen/SellLemon"
+        "https://wwwxhider.xyz/raw/ChaMucNguyen/SellLemon"
     ))()
 
 else
@@ -20,4 +17,8 @@ if PlaceId == 10449761463 then -- The Strongest Battlegrounds
 
 else
 
+
+    loadstring(game:HttpGet(
+        "https://www.xhider.xyz/raw/ChaMucNguyen/BuonCuoivcl"
+    ))()
 end
