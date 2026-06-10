@@ -3,6 +3,11 @@ local PlaceId = game.PlaceId
 local Games = {
     [79268393072444] = "https://www.xhider.xyz/raw/ChaMucNguyen/SellLemons",
     [10449761463]    = "https://www.xhider.xyz/raw/ChaMucNguyen/ChaMucTSB",
+    [2753915549] = "https://www.xhider.xyz/raw/ChaMucNguyen/Bloxfruit",
+    [4442272183]    = "https://www.xhider.xyz/raw/ChaMucNguyen/Bloxfruit",
+    [7449423635] = "https://www.xhider.xyz/raw/ChaMucNguyen/Bloxfruit",
+    [122478697296975]    = "https://www.xhider.xyz/raw/ChaMucNguyen/Bloxfruit",
+
 }
 
 local DefaultScript = "https://www.xhider.xyz/raw/ChaMucNguyen/BuonCuoivcl"
