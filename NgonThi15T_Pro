@@ -1,16 +1,16 @@
 local PlaceId = game.PlaceId
 
 local Games = {
-    [79268393072444] = "https://www.xhider.xyz/raw/ChaMucNguyen/SellLemons",
-    [10449761463]    = "https://www.xhider.xyz/raw/ChaMucNguyen/ChaMucTSB",
-    [2753915549] = "https://www.xhider.xyz/raw/ChaMucNguyen/Bloxfruit",
-    [4442272183]    = "https://www.xhider.xyz/raw/ChaMucNguyen/Bloxfruit",
-    [7449423635] = "https://www.xhider.xyz/raw/ChaMucNguyen/Bloxfruit",
-    [122478697296975]    = "https://www.xhider.xyz/raw/ChaMucNguyen/Bloxfruit",
+    [79268393072444] = "https://obfuscatorhub.onrender.com/api/rwnd2ask", -------sell lemons
+    [10449761463]    = "https://obfuscatorhub.onrender.com/api/lunc814r", -------the strongest battleground
+    [2753915549] = "https://obfuscatorhub.onrender.com/api/zdl3bv2q",-----bloxfruit
+    [4442272183]    = "https://obfuscatorhub.onrender.com/api/zdl3bv2q", ------bloxfruit
+    [7449423635] = "https://obfuscatorhub.onrender.com/api/zdl3bv2q", ------bloxfruit
+    [122478697296975]    = "https://obfuscatorhub.onrender.com/api/zdl3bv2q", ------bloxfruit
 
 }
 
-local DefaultScript = "https://www.xhider.xyz/raw/ChaMucNguyen/BuonCuoivcl"
+local DefaultScript = "https://obfuscatorhub.onrender.com/api/mxckhphd" ---funscript
 
 local Url = Games[PlaceId] or DefaultScript
 
