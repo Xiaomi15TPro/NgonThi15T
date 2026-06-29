@@ -13,16 +13,15 @@ end
 local PlaceId = game.PlaceId
 
 local Games = {
-    [79268393072444] = "https://obfuscatorhub.onrender.com/api/rwnd2ask", -------sell lemons
-    [10449761463]    = "https://obfuscatorhub.onrender.com/api/lunc814r", -------the strongest battleground
-    [2753915549] = "https://obfuscatorhub.onrender.com/api/zdl3bv2q",-----bloxfruit
-    [4442272183]    = "https://obfuscatorhub.onrender.com/api/zdl3bv2q", ------bloxfruit
-    [7449423635] = "https://obfuscatorhub.onrender.com/api/zdl3bv2q", ------bloxfruit
-    [122478697296975]    = "https://obfuscatorhub.onrender.com/api/zdl3bv2q", ------bloxfruit
+    [79268393072444] = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/sell%20lemon.lua", -------sell lemons
+    [10449761463]    = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/tsb.lua", -------the strongest battleground
+    [2753915549] = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/bloxfruit.lua",-----bloxfruit
+    [4442272183] = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/bloxfruit.lua", ------bloxfruit
+    [7449423635]    = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/bloxfruit.lua", ------bloxfruit
 
 }
 
-local DefaultScript = "https://obfuscatorhub.onrender.com/api/mxckhphd" ---funscript
+local DefaultScript = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/15t_pro.lua" ---funscript
 
 local Url = Games[PlaceId] or DefaultScript
 
@@ -33,5 +32,5 @@ end)
 if Success and Result then
     loadstring(Result)()
 else
-    warn("Failed to load script:", Result)
+    warn("Script deo load duoc!", Result)
 end
