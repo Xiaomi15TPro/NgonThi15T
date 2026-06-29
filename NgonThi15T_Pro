@@ -1,3 +1,15 @@
+local executor = identifyexecutor and identifyexecutor() or "Unknown"
+
+local blocked = {
+    ["Xeno"] = true,
+    ["Solara"] = true,
+}
+
+if blocked[executor] then
+    game.Players.LocalPlayer:Kick("This script isnt support Xeno and Solara!")
+    return
+end
+
 local PlaceId = game.PlaceId
 
 local Games = {
