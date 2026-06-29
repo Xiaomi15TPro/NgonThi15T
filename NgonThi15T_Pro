@@ -15,9 +15,9 @@ local PlaceId = game.PlaceId
 local Games = {
     [79268393072444] = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/sell%20lemon.lua", -------sell lemons
     [10449761463]    = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/tsb.lua", -------the strongest battleground
-    [2753915549] = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/bloxfruit.lua",-----bloxfruit
-    [4442272183] = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/bloxfruit.lua", ------bloxfruit
-    [7449423635]    = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/bloxfruit.lua", ------bloxfruit
+    [2753915549] = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/BloxFruit.lua",-----bloxfruit
+    [4442272183] = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/BloxFruit.lua", ------bloxfruit
+    [7449423635]    = "https://raw.githubusercontent.com/Xiaomi15TPro/chamucyeuem1/refs/heads/main/BloxFruit.lua", ------bloxfruit
 
 }
 
